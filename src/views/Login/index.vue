@@ -80,6 +80,7 @@
   </div>
 </template>
 <script>
+import { reactive, ref } from "@vue/composition-api";
 import {
   stripscript,
   validateEmail,
@@ -88,9 +89,13 @@ import {
 } from "@/utils/validate";
 export default {
   name: "login",
-  data() {
+  setup(props, { refs }) {
+    // 这里放置data数据、生命周期、自定义的函数
+    /**
+     * 数据验证
+     */
     // 验证用户名
-    var validateUserName = (rule, value, callback) => {
+    let validateUserName = (rule, value, callback) => {
       if (value === "") {
         callback(new Error("请输入用户名"));
       } else if (validateEmail(value)) {
@@ -100,9 +105,9 @@ export default {
       }
     };
     // 验证密码
-    var validatePassword = (rule, value, callback) => {
-      this.ruleForm.password = stripscript(value);
-      value = this.ruleForm.password;
+    let validatePassword = (rule, value, callback) => {
+      ruleForm.password = stripscript(value);
+      value = ruleForm.password;
       if (value === "") {
         callback(new Error("请输入密码"));
       } else if (validatePwd(value)) {
@@ -112,13 +117,13 @@ export default {
       }
     };
     // 验证密码
-    var validatePasswords = (rule, value, callback) => {
+    let validatePasswords = (rule, value, callback) => {
       // 如果模块为login时，直接通过
-      if (this.model === "login") {
+      if (model.value === "login") {
         callback();
       }
-      this.ruleForm.passwords = stripscript(value);
-      value = this.ruleForm.passwords;
+      ruleForm.passwords = stripscript(value);
+      value = ruleForm.passwords;
       if (value === "") {
         callback(new Error("请再次输入密码"));
       } else if (value != this.ruleForm.password) {
@@ -128,9 +133,9 @@ export default {
       }
     };
     // 验证验证码
-    var validateCode = (rule, value, callback) => {
-      this.ruleForm.code = stripscript(value);
-      value = this.ruleForm.code;
+    let validateCode = (rule, value, callback) => {
+      ruleForm.code = stripscript(value);
+      value = ruleForm.code;
       if (value === "") {
         return callback(new Error("请输入验证码"));
       } else if (validateVCode(value)) {
@@ -139,37 +144,43 @@ export default {
         callback();
       }
     };
-    return {
-      menuTab: [
-        { txt: "登陆", current: false, type: "login" },
-        { txt: "注册", current: true, type: "register" }
-      ],
-      // 模块
-      model: "register",
-      ruleForm: {
-        username: "",
-        password: "",
-        passwords: "",
-        code: ""
-      },
-      rules: {
-        username: [{ validator: validateUserName, trigger: "blur" }],
-        password: [{ validator: validatePassword, trigger: "blur" }],
-        passwords: [{ validator: validatePasswords, trigger: "blur" }],
-        code: [{ validator: validateCode, trigger: "blur" }]
-      }
-    };
-  },
-  methods: {
-    toggleMenu(data) {
-      this.menuTab.forEach(elem => {
+
+    /**
+     * 声明数据
+     */
+    const menuTab = reactive([
+      { txt: "登陆", current: true, type: "login" },
+      { txt: "注册", current: false, type: "register" }
+    ]);
+    // 模块值
+    const model = ref("login");
+    // 表单绑定数据
+    const ruleForm = reactive({
+      username: "",
+      password: "",
+      passwords: "",
+      code: ""
+    });
+    // 鼠标移动，表单数据验证
+    const rules = reactive({
+      username: [{ validator: validateUserName, trigger: "blur" }],
+      password: [{ validator: validatePassword, trigger: "blur" }],
+      passwords: [{ validator: validatePasswords, trigger: "blur" }],
+      code: [{ validator: validateCode, trigger: "blur" }]
+    });
+
+    /**
+     * 声明函数
+     */
+    const toggleMenu = data => {
+      menuTab.forEach(elem => {
         elem.current = false;
       });
       data.current = true;
-      this.model = data.type;
-    },
-    submitForm(formName) {
-      this.$refs[formName].validate(valid => {
+      model.value = data.type;
+    };
+    const submitForm = formName => {
+      refs[formName].validate(valid => {
         if (valid) {
           alert("submit!");
         } else {
@@ -177,7 +188,19 @@ export default {
           return false;
         }
       });
-    }
+    };
+
+    /**
+     * 返回数据
+     */
+    return {
+      menuTab,
+      model,
+      ruleForm,
+      rules,
+      toggleMenu,
+      submitForm
+    };
   }
 };
 </script>
