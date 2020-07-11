@@ -31,7 +31,7 @@
         <el-form-item prop="password" class="item-form">
           <label>密码</label>
           <el-input
-            type="text"
+            type="password"
             v-model="ruleForm.password"
             autocomplete="off"
             minlength="6"
@@ -45,7 +45,7 @@
         >
           <label>重复密码</label>
           <el-input
-            type="text"
+            type="password"
             v-model="ruleForm.passwords"
             autocomplete="off"
             minlength="6"
@@ -63,7 +63,9 @@
               ></el-input>
             </el-col>
             <el-col :span="9">
-              <el-button type="success" class="block">获取验证码</el-button>
+              <el-button type="success" class="block" @click="getSms()"
+                >获取验证码</el-button
+              >
             </el-col>
           </el-row>
         </el-form-item>
@@ -80,7 +82,8 @@
   </div>
 </template>
 <script>
-import { reactive, ref } from "@vue/composition-api";
+import { GetSms } from "@/api/login";
+import { reactive, ref, onMounted } from "@vue/composition-api";
 import {
   stripscript,
   validateEmail,
@@ -172,6 +175,9 @@ export default {
     /**
      * 声明函数
      */
+    /**
+     * 选择界面模式
+     */
     const toggleMenu = data => {
       menuTab.forEach(elem => {
         elem.current = false;
@@ -179,6 +185,9 @@ export default {
       data.current = true;
       model.value = data.type;
     };
+    /**
+     * 提交表单
+     */
     const submitForm = formName => {
       refs[formName].validate(valid => {
         if (valid) {
@@ -189,6 +198,19 @@ export default {
         }
       });
     };
+    /**
+     * 获取验证码
+     */
+    const getSms = () => {
+      GetSms({ username: ruleForm.username });
+    };
+
+    /**
+     * 挂载完成后执行
+     */
+    onMounted(() => {
+      //getSms();
+    });
 
     /**
      * 返回数据
@@ -199,7 +221,8 @@ export default {
       ruleForm,
       rules,
       toggleMenu,
-      submitForm
+      submitForm,
+      getSms
     };
   }
 };

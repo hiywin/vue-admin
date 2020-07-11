@@ -1,7 +1,11 @@
 import axios from "axios";
 
 //创建axios，赋值变量service
-const service = axios.create();
+const BASEURL = process.env.NODE_ENV === "production" ? "" : "/devApi";
+const service = axios.create({
+  baseURL: BASEURL,
+  timeout: 1000 * 10
+});
 
 // 添加请求拦截器
 service.interceptors.request.use(
