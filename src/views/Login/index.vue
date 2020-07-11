@@ -21,16 +21,18 @@
         size="medium"
       >
         <el-form-item prop="username" class="item-form">
-          <label>邮箱</label>
+          <label for="username">邮箱</label>
           <el-input
+            id="username"
             type="text"
             v-model="ruleForm.username"
             autocomplete="off"
           ></el-input>
         </el-form-item>
         <el-form-item prop="password" class="item-form">
-          <label>密码</label>
+          <label for="password">密码</label>
           <el-input
+            id="password"
             type="password"
             v-model="ruleForm.password"
             autocomplete="off"
@@ -43,8 +45,9 @@
           class="item-form"
           v-show="model === 'register'"
         >
-          <label>重复密码</label>
+          <label for="passwords">重复密码</label>
           <el-input
+            id="passwords"
             type="password"
             v-model="ruleForm.passwords"
             autocomplete="off"
@@ -53,10 +56,11 @@
           ></el-input>
         </el-form-item>
         <el-form-item prop="code" class="item-form">
-          <label>验证码</label>
+          <label for="code">验证码</label>
           <el-row :gutter="10">
             <el-col :span="15">
               <el-input
+                id="code"
                 v-model="ruleForm.code"
                 minlength="6"
                 maxlength="6"
@@ -74,7 +78,8 @@
             type="danger"
             @click="submitForm('ruleForm')"
             class="login-btn block"
-            >提交</el-button
+            :disabled="loginButtonStatus"
+            >{{ model === "login" ? "登陆" : "注册" }}</el-button
           >
         </el-form-item>
       </el-form>
@@ -92,7 +97,7 @@ import {
 } from "@/utils/validate";
 export default {
   name: "login",
-  setup(props, { refs }) {
+  setup(props, { refs, root }) {
     // 这里放置data数据、生命周期、自定义的函数
     /**
      * 数据验证
@@ -157,6 +162,8 @@ export default {
     ]);
     // 模块值
     const model = ref("login");
+    // 登陆按钮禁用状态
+    const loginButtonStatus = ref(true);
     // 表单绑定数据
     const ruleForm = reactive({
       username: "",
@@ -202,7 +209,21 @@ export default {
      * 获取验证码
      */
     const getSms = () => {
-      GetSms({ username: ruleForm.username });
+      if (ruleForm.username == "") {
+        root.$message.error("邮箱不能为空！");
+        return false;
+      }
+      if (validateEmail(ruleForm.username)) {
+        root.$message.error("邮箱格式有误，请重试！");
+        return false;
+      }
+      GetSms({ username: ruleForm.username })
+        .then(response => {
+          console.log(response);
+        })
+        .catch(error => {
+          console.log(error);
+        });
     };
 
     /**
@@ -218,6 +239,7 @@ export default {
     return {
       menuTab,
       model,
+      loginButtonStatus,
       ruleForm,
       rules,
       toggleMenu,

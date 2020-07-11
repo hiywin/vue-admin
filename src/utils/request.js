@@ -1,4 +1,5 @@
 import axios from "axios";
+import { Message } from "element-ui";
 
 //创建axios，赋值变量service
 const BASEURL = process.env.NODE_ENV === "production" ? "" : "/devApi";
@@ -23,7 +24,13 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   function(response) {
     // 对响应数据做些什么
-    return response;
+    let data = response.data;
+    if (data.resCode !== 0) {
+      Message.error(data.message);
+      return Promise.reject(data);
+    } else {
+      return response;
+    }
   },
   function(error) {
     // 对响应错误做些什么
