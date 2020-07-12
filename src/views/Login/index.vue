@@ -67,8 +67,12 @@
               ></el-input>
             </el-col>
             <el-col :span="9">
-              <el-button type="success" class="block" @click="getSms()"
-                >获取验证码</el-button
+              <el-button
+                type="success"
+                class="block"
+                @click="getSms()"
+                :disabled="codeButtonStatus.status"
+                >{{ codeButtonStatus.text }}</el-button
               >
             </el-col>
           </el-row>
@@ -87,7 +91,7 @@
   </div>
 </template>
 <script>
-import { GetSms } from "@/api/login";
+import { GetSms, Register } from "@/api/login";
 import { reactive, ref, onMounted } from "@vue/composition-api";
 import {
   stripscript,
@@ -134,7 +138,7 @@ export default {
       value = ruleForm.passwords;
       if (value === "") {
         callback(new Error("请再次输入密码"));
-      } else if (value != this.ruleForm.password) {
+      } else if (value != ruleForm.password) {
         callback(new Error("重复密码不正确"));
       } else {
         callback();
@@ -164,6 +168,11 @@ export default {
     const model = ref("login");
     // 登陆按钮禁用状态
     const loginButtonStatus = ref(true);
+    // 获取验证码按钮禁用状态
+    const codeButtonStatus = reactive({
+      status: false,
+      text: "获取验证码"
+    });
     // 表单绑定数据
     const ruleForm = reactive({
       username: "",
@@ -178,6 +187,8 @@ export default {
       passwords: [{ validator: validatePasswords, trigger: "blur" }],
       code: [{ validator: validateCode, trigger: "blur" }]
     });
+    // 倒计时
+    const timer = ref(null);
 
     /**
      * 声明函数
@@ -191,6 +202,7 @@ export default {
       });
       data.current = true;
       model.value = data.type;
+      refs.ruleForm.resetFields();
     };
     /**
      * 提交表单
@@ -198,12 +210,49 @@ export default {
     const submitForm = formName => {
       refs[formName].validate(valid => {
         if (valid) {
-          alert("submit!");
+          let requstData = {
+            username: ruleForm.username,
+            password: ruleForm.password,
+            code: ruleForm.code
+          };
+          Register(requstData)
+            .then(response => {
+              let data = response.data;
+              root.$message({
+                message: data.message,
+                type: "success"
+              });
+            })
+            .catch(error => {
+              console.log(error);
+              root.$message({
+                message: "error register!!",
+                type: "error"
+              });
+            });
         } else {
           console.log("error submit!!");
           return false;
         }
       });
+    };
+    /**
+     * 倒计时
+     */
+    const countDown = number => {
+      // setTimeout 只执行一次
+      // setInterval 不断的执行，需要条件才会停止
+      let time = number;
+      timer.value = setInterval(() => {
+        time--;
+        if (time === 0) {
+          clearInterval(timer.value);
+          codeButtonStatus.status = false;
+          codeButtonStatus.text = "再次获取";
+        } else {
+          codeButtonStatus.text = `倒计时${time}秒`;
+        }
+      }, 1000);
     };
     /**
      * 获取验证码
@@ -217,9 +266,22 @@ export default {
         root.$message.error("邮箱格式有误，请重试！");
         return false;
       }
-      GetSms({ username: ruleForm.username })
+      let requestData = { username: ruleForm.username, module: model.value };
+      // 修改获取验证码按钮状态
+      codeButtonStatus.status = true;
+      codeButtonStatus.text = "发送中";
+
+      GetSms(requestData)
         .then(response => {
-          console.log(response);
+          let data = response.data;
+          root.$message({
+            message: data.message,
+            type: "success"
+          });
+          // 启用注册、登陆按钮
+          loginButtonStatus.value = false;
+          // 调用定时器，倒计时
+          countDown(60);
         })
         .catch(error => {
           console.log(error);
@@ -240,6 +302,7 @@ export default {
       menuTab,
       model,
       loginButtonStatus,
+      codeButtonStatus,
       ruleForm,
       rules,
       toggleMenu,

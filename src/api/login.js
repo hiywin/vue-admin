@@ -6,6 +6,16 @@ export function GetSms(data) {
   return service.request({
     method: "post",
     url: "/getSms/",
-    data: data
+    data
+  });
+}
+/**
+ * 注册
+ */
+export function Register(data) {
+  return service.request({
+    method: "post",
+    url: "/register/",
+    data
   });
 }
