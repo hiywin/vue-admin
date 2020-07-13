@@ -19,3 +19,13 @@ export function Register(data) {
     data
   });
 }
+/**
+ * 登陆
+ */
+export function Login(data) {
+  return service.request({
+    method: "post",
+    url: "/login/",
+    data
+  });
+}

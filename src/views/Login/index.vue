@@ -91,7 +91,7 @@
   </div>
 </template>
 <script>
-import { GetSms, Register } from "@/api/login";
+import { GetSms, Register, Login } from "@/api/login";
 import { reactive, ref, onMounted } from "@vue/composition-api";
 import {
   stripscript,
@@ -210,26 +210,12 @@ export default {
     const submitForm = formName => {
       refs[formName].validate(valid => {
         if (valid) {
-          let requstData = {
+          let requestData = {
             username: ruleForm.username,
             password: ruleForm.password,
             code: ruleForm.code
           };
-          Register(requstData)
-            .then(response => {
-              let data = response.data;
-              root.$message({
-                message: data.message,
-                type: "success"
-              });
-            })
-            .catch(error => {
-              console.log(error);
-              root.$message({
-                message: "error register!!",
-                type: "error"
-              });
-            });
+          model.value === "login" ? login(requestData) : register(requestData);
         } else {
           console.log("error submit!!");
           return false;
@@ -237,9 +223,47 @@ export default {
       });
     };
     /**
+     * 登陆
+     */
+    const login = requestData => {
+      Login(requestData)
+        .then(response => {
+          console.log(response);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    };
+    /**
+     * 注册
+     */
+    const register = requestData => {
+      Register(requstData)
+        .then(response => {
+          let data = response.data;
+          root.$message({
+            message: data.message,
+            type: "success"
+          });
+          toggleMenu(menuTab[0]);
+          clearCountDown();
+        })
+        .catch(error => {
+          console.log(error);
+          root.$message({
+            message: "error register!!",
+            type: "error"
+          });
+        });
+    };
+    /**
      * 倒计时
      */
     const countDown = number => {
+      // 判断定时器是否存在，存在则清除
+      if (timer.value) {
+        clearInterval(timer.value);
+      }
       // setTimeout 只执行一次
       // setInterval 不断的执行，需要条件才会停止
       let time = number;
@@ -253,6 +277,16 @@ export default {
           codeButtonStatus.text = `倒计时${time}秒`;
         }
       }, 1000);
+    };
+    /**
+     * 清除倒计时
+     */
+    const clearCountDown = () => {
+      // 还原验证码按钮默认状态
+      codeButtonStatus.status = false;
+      codeButtonStatus.text = "获取验证码";
+      //清除倒计时
+      clearInterval(timer.value);
     };
     /**
      * 获取验证码
