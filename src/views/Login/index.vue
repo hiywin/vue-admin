@@ -91,6 +91,7 @@
   </div>
 </template>
 <script>
+//import sha1 from "js-sha1";
 import { GetSms, Register, Login } from "@/api/login";
 import { reactive, ref, onMounted } from "@vue/composition-api";
 import {
@@ -202,7 +203,21 @@ export default {
       });
       data.current = true;
       model.value = data.type;
+      resetFormData();
+      clearCountDown();
+    };
+    /**
+     * 重置表单
+     */
+    const resetFormData = () => {
       refs.ruleForm.resetFields();
+    };
+    /**
+     * 更新按钮状态
+     */
+    const updateButtonStatus = params => {
+      codeButtonStatus.status = params.status;
+      codeButtonStatus.text = params.text;
     };
     /**
      * 提交表单
@@ -212,9 +227,10 @@ export default {
         if (valid) {
           let requestData = {
             username: ruleForm.username,
-            password: ruleForm.password,
+            password: ruleForm.password, //sha1(ruleForm.password),
             code: ruleForm.code
           };
+          console.log(requestData);
           model.value === "login" ? login(requestData) : register(requestData);
         } else {
           console.log("error submit!!");
@@ -238,7 +254,7 @@ export default {
      * 注册
      */
     const register = requestData => {
-      Register(requstData)
+      Register(requestData)
         .then(response => {
           let data = response.data;
           root.$message({
@@ -271,8 +287,10 @@ export default {
         time--;
         if (time === 0) {
           clearInterval(timer.value);
-          codeButtonStatus.status = false;
-          codeButtonStatus.text = "再次获取";
+          updateButtonStatus({
+            status: false,
+            text: "再次获取"
+          });
         } else {
           codeButtonStatus.text = `倒计时${time}秒`;
         }
@@ -283,8 +301,10 @@ export default {
      */
     const clearCountDown = () => {
       // 还原验证码按钮默认状态
-      codeButtonStatus.status = false;
-      codeButtonStatus.text = "获取验证码";
+      updateButtonStatus({
+        status: false,
+        text: "获取验证码"
+      });
       //清除倒计时
       clearInterval(timer.value);
     };
@@ -302,8 +322,10 @@ export default {
       }
       let requestData = { username: ruleForm.username, module: model.value };
       // 修改获取验证码按钮状态
-      codeButtonStatus.status = true;
-      codeButtonStatus.text = "发送中";
+      updateButtonStatus({
+        status: true,
+        text: "发送中"
+      });
 
       GetSms(requestData)
         .then(response => {
