@@ -1,5 +1,12 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
+// 引入布局组件
+import Layout from "@/views/Layout";
+// 解决ElementUI导航栏中的vue-router中3.0版本以上重复点菜单报错问题
+const originalPush = VueRouter.prototype.push;
+VueRouter.prototype.push = function push(localtion) {
+  return originalPush.call(this, localtion).catch(err => err);
+};
 
 Vue.use(VueRouter);
 
@@ -27,9 +34,9 @@ const routes = [
     redirect: "index",
     meta: {
       name: "控制台",
-      icon: "el-icon-setting"
+      icon: "console"
     },
-    component: () => import("../views/Layout/index.vue"),
+    component: Layout,
     children: [
       {
         path: "/index",
@@ -46,9 +53,9 @@ const routes = [
     name: "Info",
     meta: {
       name: "信息管理",
-      icon: "el-icon-document"
+      icon: "info"
     },
-    component: () => import("../views/Layout/index.vue"),
+    component: Layout,
     children: [
       {
         path: "/infoIndex",
@@ -73,9 +80,9 @@ const routes = [
     name: "User",
     meta: {
       name: "用户管理",
-      icon: "el-icon-user"
+      icon: "user"
     },
-    component: () => import("../views/Layout/index.vue"),
+    component: Layout,
     children: [
       {
         path: "/userIndex",
