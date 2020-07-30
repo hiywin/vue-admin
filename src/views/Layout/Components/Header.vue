@@ -24,10 +24,10 @@ export default {};
   height: $layoutHeader;
   background-color: #fff;
   -webkit-box-shadow: 0 3px 16px 0 rgba(0, 0, 0, 0.1);
-  line-height: 75px;
+  line-height: 55px;
 }
 .header-icon {
-  padding: 0 32px;
+  padding: 0 22px;
   svg {
     margin-bottom: -8px;
     font-size: 25px;
@@ -36,7 +36,7 @@ export default {};
 }
 .user-info {
   height: 100%;
-  padding: 0 32px;
+  padding: 0 22px;
   border-right: 1px solid #ededed;
   + .header-icon {
     padding: 0 28px;
