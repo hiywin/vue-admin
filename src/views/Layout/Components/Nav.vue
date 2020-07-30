@@ -2,7 +2,7 @@
   <div id="nav-wrap">
     <h1 class="logo"><img src="../../../assets/logo.png" /></h1>
     <el-menu
-      default-active="1-4-1"
+      :default-active="defaultActive"
       class="el-menu-vertical-demo"
       @open="handleOpen"
       @close="handleClose"
