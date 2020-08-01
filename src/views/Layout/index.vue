@@ -17,7 +17,7 @@ export default {
     /**
      * 监听菜单收缩展开状态，并更改母版样式
      */
-    const menuStatus = computed(() => root.$store.state.isCollapse);
+    const menuStatus = computed(() => root.$store.state.app.isCollapse);
 
     return {
       menuStatus

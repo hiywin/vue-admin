@@ -92,7 +92,7 @@
 </template>
 <script>
 //import sha1 from "js-sha1";
-import { GetSms, Register, Login } from "@/api/login";
+import { GetSms, Register } from "@/api/login";
 import { reactive, ref, onMounted } from "@vue/composition-api";
 import {
   stripscript,
@@ -242,7 +242,8 @@ export default {
      * 登陆
      */
     const login = requestData => {
-      Login(requestData)
+      root.$store
+        .dispatch("login", requestData)
         .then(response => {
           console.log(response);
           root.$router.push({
@@ -374,7 +375,7 @@ export default {
 <style lang="scss" scoped>
 #login {
   height: 100vh;
-  background-color: #344a5f;
+  background-color: $navBackColor;
 }
 .login-wrap {
   width: 330px;

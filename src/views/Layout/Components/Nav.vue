@@ -42,7 +42,7 @@ export default {
     /**
      * 监听菜单收缩展开状态
      */
-    const isCollapse = computed(() => root.$store.state.isCollapse);
+    const isCollapse = computed(() => root.$store.state.app.isCollapse);
 
     return {
       isCollapse,
@@ -66,7 +66,7 @@ export default {
   top: 0;
   left: 0;
   height: 100vh;
-  background-color: #344a5f;
+  background-color: $navBackColor;
   @include webkit(transition, all 0.3s ease 0s);
   svg {
     font-size: 16px;
