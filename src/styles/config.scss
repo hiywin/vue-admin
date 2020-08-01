@@ -8,3 +8,15 @@ $mainColor: #f56c6c;
 
 // 模板头部长度
 $layoutHeader: 55px;
+
+// 左侧菜单最小值
+$navMenuMin: 64px;
+
+// 改变整体样式浏览器兼容
+@mixin webkit($type, $value){
+    -webkit-#{$type}: $value;
+    -moz-#{$type}: $value;
+    -o-#{$type}: $value;
+    -ms-#{$type}: $value;
+    #{$type}: $value;
+}

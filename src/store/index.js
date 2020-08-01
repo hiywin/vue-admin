@@ -4,8 +4,18 @@ import Vuex from "vuex";
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-  state: {},
-  mutations: {},
+  state: {
+    isCollapse: false
+  },
+  getters: {},
+  mutations: {
+    /**
+     * 菜单栏收缩展开状态更改
+     */
+    SET_COLLAPSE(state) {
+      state.isCollapse = !state.isCollapse;
+    }
+  },
   actions: {},
   modules: {}
 });

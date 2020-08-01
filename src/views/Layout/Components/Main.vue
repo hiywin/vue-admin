@@ -27,17 +27,25 @@ export default {};
   width: 100%;
   height: 100%;
   padding-top: $layoutHeader + 10;
-  padding-left: $navMenu + 10;
   padding-right: 10px;
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
+  @include webkit(box-sizing, border-box);
+  @include webkit(transition, all 0.3s ease 0s);
 }
 .content {
   width: 100%;
   height: 100%;
   padding: 30px 30px 0 30px;
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
+  @include webkit(box-sizing, border-box);
   background-color: #fff;
+}
+.open {
+  .main-content {
+    padding-left: $navMenu + 10;
+  }
+}
+.close {
+  .main-content {
+    padding-left: $navMenuMin + 10;
+  }
 }
 </style>

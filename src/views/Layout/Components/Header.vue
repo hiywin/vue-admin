@@ -1,6 +1,6 @@
 <template>
   <div id="header-wrap">
-    <div class="pull-left header-icon">
+    <div class="pull-left header-icon" @click="navMenuState">
       <svg-icon iconClass="menu" className="menu" />
     </div>
     <div class="pull-right">
@@ -12,7 +12,21 @@
   </div>
 </template>
 <script>
-export default {};
+export default {
+  name: "layoutHeader",
+  setup(props, { root }) {
+    /**
+     * 菜单栏收缩展开状态更改
+     */
+    const navMenuState = () => {
+      root.$store.commit("SET_COLLAPSE");
+    };
+
+    return {
+      navMenuState
+    };
+  }
+};
 </script>
 <style lang="scss" scoped>
 @import "../../../styles/config.scss";
@@ -23,7 +37,8 @@ export default {};
   left: $navMenu;
   height: $layoutHeader;
   background-color: #fff;
-  -webkit-box-shadow: 0 3px 16px 0 rgba(0, 0, 0, 0.1);
+  @include webkit(box-shadow, 0 3px 16px 0 rgba(0, 0, 0, 0.1));
+  @include webkit(transition, all 0.3s ease 0s);
   line-height: 55px;
 }
 .header-icon {
@@ -32,6 +47,7 @@ export default {};
     margin-bottom: -8px;
     font-size: 25px;
     color: #344a5f;
+    cursor: pointer;
   }
 }
 .user-info {
@@ -40,6 +56,16 @@ export default {};
   border-right: 1px solid #ededed;
   + .header-icon {
     padding: 0 28px;
+  }
+}
+.open {
+  #header-wrap {
+    left: $navMenu;
+  }
+}
+.close {
+  #header-wrap {
+    left: $navMenuMin;
   }
 }
 </style>
