@@ -4,7 +4,7 @@
       <svg-icon iconClass="menu" className="menu" />
     </div>
     <div class="pull-right">
-      <div class="user-info pull-left">管理员</div>
+      <div class="user-info pull-left">{{ userName }}</div>
       <div class="header-icon pull-left">
         <svg-icon iconClass="exit" className="exit" />
       </div>
@@ -12,6 +12,7 @@
   </div>
 </template>
 <script>
+import { computed } from "@vue/composition-api";
 export default {
   name: "layoutHeader",
   setup(props, { root }) {
@@ -21,9 +22,14 @@ export default {
     const navMenuState = () => {
       root.$store.commit("app/SET_COLLAPSE");
     };
+    /**
+     * 用户名显示
+     */
+    const userName = computed(() => root.$store.state.app.userName);
 
     return {
-      navMenuState
+      navMenuState,
+      userName
     };
   }
 };
