@@ -243,7 +243,7 @@ export default {
      */
     const login = requestData => {
       root.$store
-        .dispatch("login", requestData)
+        .dispatch("app/login", requestData)
         .then(response => {
           console.log(response);
           root.$router.push({
