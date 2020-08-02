@@ -19,7 +19,7 @@ export default {
      * 菜单栏收缩展开状态更改
      */
     const navMenuState = () => {
-      root.$store.commit("SET_COLLAPSE");
+      root.$store.commit("app/SET_COLLAPSE");
     };
 
     return {
