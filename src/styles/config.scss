@@ -23,3 +23,16 @@ $navMenuMin: 64px;
     -ms-#{$type}: $value;
     #{$type}: $value;
 }
+
+// Label样式设置
+@mixin labelDom($align, $width, $line-height: "normal"){
+    label {
+        float: left;
+        width: $width+px;
+        text-align: $align;
+        line-height: $line-height + px;
+    }
+    .wrap-content {
+        margin-left: $width + px;
+    }
+}

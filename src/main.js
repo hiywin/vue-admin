@@ -9,7 +9,7 @@ import "./router/premit";
 //自定义全局组件
 import "./icons";
 
-Vue.use(ElementUI);
+Vue.use(ElementUI, { size: "small" });
 Vue.use(VueCompositionApi);
 Vue.config.productionTip = false;
 
