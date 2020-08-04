@@ -5,7 +5,7 @@
     </div>
     <div class="pull-right">
       <div class="user-info pull-left">{{ userName }}</div>
-      <div class="header-icon pull-left">
+      <div class="header-icon pull-left" @click="exit">
         <svg-icon iconClass="exit" className="exit" />
       </div>
     </div>
@@ -26,10 +26,21 @@ export default {
      * 用户名显示
      */
     const userName = computed(() => root.$store.state.app.userName);
+    /**
+     * 退出登陆
+     */
+    const exit = () => {
+      root.$store.dispatch("app/exit").then(() => {
+        root.$router.push({
+          name: "Login"
+        });
+      });
+    };
 
     return {
       navMenuState,
-      userName
+      userName,
+      exit
     };
   }
 };

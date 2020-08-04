@@ -32,3 +32,9 @@ export function setUserName(value) {
 export function getUserName() {
   return Cookie.get(userName);
 }
+/**
+ * 删除用户名
+ */
+export function removeUserName() {
+  return Cookie.remove(userName);
+}

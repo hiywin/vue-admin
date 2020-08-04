@@ -1,15 +1,21 @@
 import { Login } from "@/api/login";
-import { setToken, setUserName, getUserName } from "@/utils/app";
+import {
+  setToken,
+  getToken,
+  setUserName,
+  getUserName,
+  removeToken,
+  removeUserName
+} from "@/utils/app";
 const state = {
   isCollapse: JSON.parse(sessionStorage.getItem("isCollapse")) || false,
-  token: "",
+  token: getToken() || "",
   userName: getUserName() || ""
 };
 const getters = {
   isCollapse: state => state.isCollapse,
   userName: state => state.userName
 };
-
 const mutations = {
   // 专注于修改state，理论上是修改state的唯一路径
   /**
@@ -52,6 +58,15 @@ const actions = {
         .catch(error => {
           reject(error);
         });
+    });
+  },
+  exit({ commit }) {
+    return new Promise(resolve => {
+      removeToken();
+      removeUserName();
+      commit("SET_TOKEN", "");
+      commit("SET_USERNAME", "");
+      resolve();
     });
   }
 };
