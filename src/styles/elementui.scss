@@ -32,3 +32,11 @@ li.el-submenu{
         background-color: $mainColor !important;
     }
 }
+// table 样式
+div.el-table{
+    td, th { text-align: center; }
+    th {
+        font-weight: bold;
+        color: #344a5f;
+    }
+}

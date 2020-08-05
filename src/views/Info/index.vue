@@ -1,9 +1,10 @@
 <template>
   <div>
+    <!-- 查询块 -->
     <el-row :gutter="15">
       <el-col :span="4">
         <div class="label-wrap category">
-          <label for="">类型：</label>
+          <label for="">类别：</label>
           <div class="wrap-content">
             <el-select
               v-model="category_value"
@@ -71,9 +72,52 @@
         <el-button type="danger" style="width:100%">搜索</el-button>
       </el-col>
       <el-col :span="3">
-        <el-button type="danger" class="pull-right" style="100%"
+        <el-button type="success" class="pull-right" style="100%"
           >新增</el-button
         >
+      </el-col>
+    </el-row>
+    <!-- 数据表格 -->
+    <div class="black-space-20"></div>
+    <el-table :data="tableData" border style="width: 100%">
+      <el-table-column
+        type="selection"
+        width="45"
+        fixed="left"
+      ></el-table-column>
+      <el-table-column prop="title" label="标题"> </el-table-column>
+      <el-table-column
+        prop="category"
+        label="类别"
+        width="130"
+      ></el-table-column>
+      <el-table-column prop="date" label="日期" width="200"> </el-table-column>
+      <el-table-column prop="user" label="管理员" width="150">
+      </el-table-column>
+      <el-table-column label="操作" width="180" fixed="right">
+        <template>
+          <el-button type="danger" size="mini">删除</el-button>
+          <el-button type="success" size="mini">编辑</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <!-- 底部分页 -->
+    <div class="black-space-20"></div>
+    <el-row style="width:100%">
+      <el-col :span="5">
+        <el-button>批量删除</el-button>
+      </el-col>
+      <el-col :span="19">
+        <el-pagination
+          class="pull-right"
+          background
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :page-sizes="[10, 20, 50, 100, 1000]"
+          layout="total,sizes,prev,pager,next,jumper"
+          :total="1000"
+        >
+        </el-pagination>
       </el-col>
     </el-row>
   </div>
@@ -90,15 +134,15 @@ export default {
     const options = reactive([
       {
         value: 1,
-        label: "类型01"
+        label: "国内新闻"
       },
       {
         value: 2,
-        label: "类型02"
+        label: "国际新闻"
       },
       {
         value: 3,
-        label: "类型03"
+        label: "体育新闻"
       }
     ]);
     const keyOptions = reactive([
@@ -111,6 +155,41 @@ export default {
         label: "标题"
       }
     ]);
+    const tableData = reactive([
+      {
+        title:
+          "习近平向黎巴嫩总统奥恩致慰问电习近平向黎巴嫩总统奥恩致慰问电习近平向黎巴嫩总统奥恩致慰问电",
+        category: "国内新闻",
+        date: "2016-05-02 10:12:22",
+        user: "王小虎"
+      },
+      {
+        title: "习近平向黎巴嫩总统奥恩致慰问电",
+        category: "国内新闻",
+        date: "2016-05-02 10:12:22",
+        user: "王小虎"
+      },
+      {
+        title: "习近平向黎巴嫩总统奥恩致慰问电",
+        category: "国内新闻",
+        date: "2016-05-02 10:12:22",
+        user: "王小虎"
+      },
+      {
+        title: "习近平向黎巴嫩总统奥恩致慰问电",
+        category: "国内新闻",
+        date: "2016-05-02 10:12:22",
+        user: "王小虎"
+      }
+    ]);
+
+    // 事件
+    const handleSizeChange = value => {
+      console.log(value);
+    };
+    const handleCurrentChange = value => {
+      console.log(value);
+    };
 
     return {
       category_value,
@@ -118,7 +197,10 @@ export default {
       date_value,
       select_keywork,
       keyOptions,
-      search_keywork
+      search_keywork,
+      tableData,
+      handleSizeChange,
+      handleCurrentChange
     };
   }
 };
