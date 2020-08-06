@@ -12,7 +12,7 @@
               style="width:100%"
             >
               <el-option
-                v-for="item in options"
+                v-for="item in category_options"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -72,7 +72,11 @@
         <el-button type="danger" style="width:100%">搜索</el-button>
       </el-col>
       <el-col :span="3">
-        <el-button type="success" class="pull-right" style="100%"
+        <el-button
+          type="success"
+          class="pull-right"
+          style="100%"
+          @click="dialog_visible = true"
           >新增</el-button
         >
       </el-col>
@@ -120,18 +124,27 @@
         </el-pagination>
       </el-col>
     </el-row>
+    <!-- 新增弹窗 -->
+    <!-- 使用修饰器写法 <DialogInfo :flag.sync="dialog_visible" />  -->
+    <DialogInfo :flag="dialog_visible" @close="dialogClose" />
   </div>
 </template>
 <script>
+import DialogInfo from "./dialog/info";
 import { ref, reactive } from "@vue/composition-api";
 export default {
   name: "infoIndex",
+  components: { DialogInfo },
   setup() {
+    /**
+     *  数据
+     */
+    const dialog_visible = ref(false);
     const category_value = ref("");
     const date_value = ref("");
     const select_keywork = ref("id");
     const search_keywork = ref("");
-    const options = reactive([
+    const category_options = reactive([
       {
         value: 1,
         label: "国内新闻"
@@ -183,24 +196,34 @@ export default {
       }
     ]);
 
-    // 事件
+    /**
+     * 方法
+     */
     const handleSizeChange = value => {
       console.log(value);
     };
     const handleCurrentChange = value => {
       console.log(value);
     };
+    const dialogClose = () => {
+      dialog_visible.value = false;
+    };
 
     return {
+      // ref
+      dialog_visible,
       category_value,
-      options,
       date_value,
       select_keywork,
-      keyOptions,
       search_keywork,
+      // reactive
+      category_options,
+      keyOptions,
       tableData,
+      // func
       handleSizeChange,
-      handleCurrentChange
+      handleCurrentChange,
+      dialogClose
     };
   }
 };
