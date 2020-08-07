@@ -100,9 +100,11 @@
       </el-table-column>
       <el-table-column label="操作" width="180" fixed="right">
         <template>
-          <el-button type="danger" size="mini">删除</el-button>
           <el-button type="success" size="mini" @click="dialog_visible = true"
             >编辑</el-button
+          >
+          <el-button type="danger" size="mini" @click="deleteItem"
+            >删除</el-button
           >
         </template>
       </el-table-column>
@@ -111,7 +113,7 @@
     <div class="black-space-20"></div>
     <el-row style="width:100%">
       <el-col :span="5">
-        <el-button>批量删除</el-button>
+        <el-button @click="deleteAll">批量删除</el-button>
       </el-col>
       <el-col :span="19">
         <el-pagination
@@ -134,6 +136,7 @@
 <script>
 import DialogInfo from "./dialog/info";
 import { ref, reactive } from "@vue/composition-api";
+import { global } from "@/utils/global";
 export default {
   name: "infoIndex",
   components: { DialogInfo },
@@ -141,6 +144,7 @@ export default {
     /**
      *  数据
      */
+    const { confirm } = global();
     const dialog_visible = ref(false);
     const category_value = ref("");
     const date_value = ref("");
@@ -210,6 +214,22 @@ export default {
     const dialogClose = () => {
       dialog_visible.value = false;
     };
+    const deleteItem = () => {
+      confirm({
+        content: "确认删除当前信息，确认后将无法恢复！",
+        tips: "警告",
+        fn: comfirmDelete
+      });
+    };
+    const deleteAll = () => {
+      confirm({
+        content: "确认删除选择的信息，确认后将无法恢复！",
+        type: "success"
+      });
+    };
+    const comfirmDelete = () => {
+      console.log("删除111111");
+    };
 
     return {
       // ref
@@ -222,10 +242,12 @@ export default {
       category_options,
       keyOptions,
       tableData,
-      // func
+      // methods
       handleSizeChange,
       handleCurrentChange,
-      dialogClose
+      dialogClose,
+      deleteItem,
+      deleteAll
     };
   }
 };
