@@ -61,7 +61,7 @@
           </div>
         </div>
       </el-col>
-      <el-col :span="3">
+      <el-col :span="4">
         <el-input
           v-model="search_keywork"
           placeholder="请输入内容"
@@ -69,13 +69,13 @@
         ></el-input>
       </el-col>
       <el-col :span="2">
-        <el-button type="danger" style="width:100%">搜索</el-button>
+        <el-button type="danger" style="width:90%">搜索</el-button>
       </el-col>
-      <el-col :span="3">
+      <el-col :span="2">
         <el-button
-          type="success"
+          type="danger"
           class="pull-right"
-          style="100%"
+          style="width:90%"
           @click="dialog_visible = true"
           >新增</el-button
         >
@@ -101,7 +101,9 @@
       <el-table-column label="操作" width="180" fixed="right">
         <template>
           <el-button type="danger" size="mini">删除</el-button>
-          <el-button type="success" size="mini">编辑</el-button>
+          <el-button type="success" size="mini" @click="dialog_visible = true"
+            >编辑</el-button
+          >
         </template>
       </el-table-column>
     </el-table>

@@ -7,24 +7,36 @@
       @close="dialogClose"
     >
       <el-form :model="form"
-        ><el-form-item label="标题" :label-width="formLabelWidth">
-          <el-select v-model="form.region" placeholder="请选择活动区域">
-            <el-option label="区域一" value="shanghai"></el-option>
-            <el-option label="区域二" value="beijing"></el-option>
+        ><el-form-item label="类别" :label-width="formLabelWidth">
+          <el-select v-model="form.region" placeholder="请选择类别">
+            <el-option label="国内新闻" value="shanghai"></el-option>
+            <el-option label="国际新闻" value="beijing"></el-option>
+            <el-option label="体育新闻" value="beijing1"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="类型" :label-width="formLabelWidth">
-          <el-input v-model="form.name" autocomplete="off"></el-input>
+        <el-form-item label="标题" :label-width="formLabelWidth">
+          <el-input v-model="form.name" placeholder="请输入标题"></el-input>
         </el-form-item>
         <el-form-item label="概况" :label-width="formLabelWidth">
-          <el-input v-model="form.name" autocomplete="off"></el-input>
+          <el-input
+            v-model="form.name"
+            type="textarea"
+            rows="5"
+            placeholder="请输入概况"
+          ></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false"
-          >确 定</el-button
-        >
+        <el-row>
+          <el-col :span="8" :offset="4">
+            <el-button @click="dialogClose">取 消</el-button>
+          </el-col>
+          <el-col :span="8">
+            <el-button type="danger" @click="dialogVisible = false"
+              >确 定</el-button
+            >
+          </el-col>
+        </el-row>
       </div>
     </el-dialog>
   </div>
@@ -43,7 +55,7 @@ export default {
     /**
      * ref数据
      */
-    const dialogVisible = ref(true);
+    const dialogVisible = ref(false);
     const formLabelWidth = ref("70px");
 
     /**

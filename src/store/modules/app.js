@@ -1,7 +1,6 @@
 import { Login } from "@/api/login";
 import {
   setToken,
-  getToken,
   setUserName,
   getUserName,
   removeToken,
@@ -9,7 +8,7 @@ import {
 } from "@/utils/app";
 const state = {
   isCollapse: JSON.parse(sessionStorage.getItem("isCollapse")) || false,
-  token: getToken() || "",
+  token: "",
   userName: getUserName() || ""
 };
 const getters = {
