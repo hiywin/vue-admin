@@ -130,7 +130,11 @@
     </el-row>
     <!-- 新增弹窗 -->
     <!-- 使用修饰器写法 <DialogInfo :flag.sync="dialog_visible" />  -->
-    <DialogInfo :flag="dialog_visible" @close="dialogClose" />
+    <DialogInfo
+      :flag="dialog_visible"
+      @close="dialogClose"
+      :category="options.category"
+    />
   </div>
 </template>
 <script>

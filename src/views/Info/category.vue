@@ -273,9 +273,9 @@ export default {
     const setCategoryFirstDisabled = flag => {
       category_first_disabled.value = flag;
     };
-    const setCategorySecDisabled = flag => {
-      category_sec_disabled.value = flag;
-    };
+    // const setCategorySecDisabled = flag => {
+    //   category_sec_disabled.value = flag;
+    // };
     const setSubmitDisabled = flag => {
       submit_disabled.value = flag;
     };
