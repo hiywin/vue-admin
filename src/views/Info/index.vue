@@ -12,10 +12,10 @@
               style="width:100%"
             >
               <el-option
-                v-for="item in category_options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+                v-for="item in options.category"
+                :key="item.id"
+                :label="item.category_name"
+                :value="item.id"
               >
               </el-option>
             </el-select>
@@ -135,35 +135,26 @@
 </template>
 <script>
 import DialogInfo from "./dialog/info";
-import { ref, reactive } from "@vue/composition-api";
+import { ref, reactive, onMounted } from "@vue/composition-api";
 import { global } from "@/utils/global";
+// import { common } from "@/api/common";
 export default {
   name: "infoIndex",
   components: { DialogInfo },
-  setup() {
+  setup(props, { root }) {
     /**
      *  数据
      */
     const { confirm } = global();
+    // const { getInfoCategory, category } = common();
     const dialog_visible = ref(false);
     const category_value = ref("");
     const date_value = ref("");
     const select_keywork = ref("id");
     const search_keywork = ref("");
-    const category_options = reactive([
-      {
-        value: 1,
-        label: "国内新闻"
-      },
-      {
-        value: 2,
-        label: "国际新闻"
-      },
-      {
-        value: 3,
-        label: "体育新闻"
-      }
-    ]);
+    const options = reactive({
+      category: []
+    });
     const keyOptions = reactive([
       {
         value: "id",
@@ -230,6 +221,30 @@ export default {
     const comfirmDelete = () => {
       console.log("删除111111");
     };
+    const getCategory = () => {
+      root.$store
+        .dispatch("common/getInfoCategory")
+        .then(res => {
+          options.category = res;
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    };
+
+    /**
+     * 生命周期
+     */
+    onMounted(() => {
+      // getInfoCategory();
+      getCategory();
+    });
+    // watch(
+    //   () => category.item,
+    //   value => {
+    //     options.category = value;
+    //   }
+    // );
 
     return {
       // ref
@@ -239,7 +254,7 @@ export default {
       select_keywork,
       search_keywork,
       // reactive
-      category_options,
+      options,
       keyOptions,
       tableData,
       // methods

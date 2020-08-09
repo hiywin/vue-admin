@@ -90,12 +90,7 @@
   </div>
 </template>
 <script>
-import {
-  AddFirstCategory,
-  GetCategory,
-  DeleteCategory,
-  EditCategory
-} from "@/api/news";
+import { AddFirstCategory, DeleteCategory, EditCategory } from "@/api/news";
 import { reactive, ref, onMounted } from "@vue/composition-api";
 import { global } from "@/utils/global";
 export default {
@@ -109,8 +104,8 @@ export default {
     const category_sec_disabled = ref(true);
     const submit_disabled = ref(true);
     const currentCategoryId = ref("");
-    const { confirm } = global();
     const submit_type = ref("");
+    const { confirm } = global();
     /**
      * reactive
      */
@@ -208,16 +203,6 @@ export default {
       setCategoryFirstDisabled(false);
       setSubmitDisabled(false);
     };
-    const getCategory = () => {
-      GetCategory()
-        .then(res => {
-          let data = res.data.data.data;
-          category.item = data;
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    };
     const deleteCategoryConfirm = categoryId => {
       currentCategoryId.value = categoryId;
       confirm({
@@ -262,6 +247,16 @@ export default {
 
       categoryForm.categoryName = firstItem.category_name;
       currentCategoryId.value = firstItem.id;
+    };
+    const getCategory = () => {
+      root.$store
+        .dispatch("common/getInfoCategory")
+        .then(res => {
+          category.item = res;
+        })
+        .catch(err => {
+          console.log(err);
+        });
     };
     /**
      * 设置状态封装
@@ -313,7 +308,6 @@ export default {
       // methods
       submit,
       addFirst,
-      getCategory,
       deleteCategoryConfirm,
       editCategory
     };
