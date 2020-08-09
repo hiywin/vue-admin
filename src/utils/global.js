@@ -1,4 +1,4 @@
-import { MessageBox, Message } from "element-ui";
+import { MessageBox } from "element-ui";
 // import { ref } from "@vue/composition-api";
 
 export function global() {
@@ -10,13 +10,12 @@ export function global() {
       center: true
     })
       .then(() => {
+        // 点击确定后
         params.fn && params.fn();
       })
       .catch(() => {
-        Message({
-          type: "info",
-          message: "已取消删除"
-        });
+        // 点击取消后
+        params.catchFn && params.catchFn();
       });
   };
 
