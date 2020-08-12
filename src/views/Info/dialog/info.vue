@@ -7,7 +7,7 @@
       @close="dialogClose"
       @opened="dialogOpened"
     >
-      <el-form :model="form"
+      <el-form :model="form" ref="categoryForm"
         ><el-form-item label="类别" :label-width="formLabelWidth">
           <el-select v-model="form.category" placeholder="请选择类别">
             <el-option
@@ -18,10 +18,10 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="标题" :label-width="formLabelWidth">
+        <el-form-item label="标题" :label-width="formLabelWidth" prop="title">
           <el-input v-model="form.title" placeholder="请输入标题"></el-input>
         </el-form-item>
-        <el-form-item label="概况" :label-width="formLabelWidth">
+        <el-form-item label="概况" :label-width="formLabelWidth" prop="content">
           <el-input
             v-model="form.content"
             type="textarea"
@@ -36,7 +36,9 @@
             <el-button @click="dialogClose">取 消</el-button>
           </el-col>
           <el-col :span="8">
-            <el-button type="danger" @click="submit">确 定</el-button>
+            <el-button type="danger" @click="submit" :loading="submitLoading"
+              >确 定</el-button
+            >
           </el-col>
         </el-row>
       </div>
@@ -58,13 +60,13 @@ export default {
       default: () => []
     }
   },
-  setup(props, { root, emit }) {
+  setup(props, { root, emit, refs }) {
     /**
      * ref数据
      */
     const dialogVisible = ref(false);
     const formLabelWidth = ref("70px");
-
+    const submitLoading = ref(false);
     /**
      * reactive数据
      */
@@ -83,6 +85,7 @@ export default {
     const dialogClose = () => {
       dialogVisible.value = false;
       emit("close", false);
+      refs.categoryForm.resetFields();
     };
     const dialogOpened = () => {
       categoryOption.item = props.category;
@@ -95,7 +98,7 @@ export default {
         imgUrl: "https://cn.vuejs.org/images/logo.png",
         createDate: "2020-08-10 10:10:10"
       };
-      console.log(requestData);
+      submitLoading.value = true;
       AddInfo(requestData)
         .then(res => {
           if (res.data.resCode == 0) {
@@ -103,15 +106,18 @@ export default {
               message: res.data.message,
               type: "success"
             });
+            refs.categoryForm.resetFields();
           } else {
             root.$message({
               message: res.data.message,
               type: "error"
             });
           }
+          submitLoading.value = false;
         })
         .catch(err => {
           console.log(err);
+          submitLoading.value = false;
         });
     };
 
@@ -129,6 +135,7 @@ export default {
       // ref
       dialogVisible,
       formLabelWidth,
+      submitLoading,
       // reactive
       form,
       categoryOption,

@@ -83,21 +83,26 @@
     </el-row>
     <!-- 数据表格 -->
     <div class="black-space-20"></div>
-    <el-table :data="tableData" border style="width: 100%">
+    <el-table :data="tableData.item" border style="width: 100%">
       <el-table-column
         type="selection"
         width="45"
         fixed="left"
+        prop="categoryId"
       ></el-table-column>
       <el-table-column prop="title" label="标题"> </el-table-column>
       <el-table-column
-        prop="category"
+        prop="categoryName"
         label="类别"
         width="130"
       ></el-table-column>
-      <el-table-column prop="date" label="日期" width="200"> </el-table-column>
-      <el-table-column prop="user" label="管理员" width="150">
-      </el-table-column>
+      <el-table-column
+        prop="createDate"
+        label="日期"
+        width="200"
+      ></el-table-column>
+      <!-- <el-table-column prop="user" label="管理员" width="150">
+      </el-table-column> -->
       <el-table-column label="操作" width="180" fixed="right">
         <template>
           <el-button type="success" size="mini" @click="dialog_visible = true"
@@ -141,7 +146,7 @@
 import DialogInfo from "./dialog/info";
 import { ref, reactive, onMounted } from "@vue/composition-api";
 import { global } from "@/utils/global";
-// import { common } from "@/api/common";
+import { GetList } from "@/api/news";
 export default {
   name: "infoIndex",
   components: { DialogInfo },
@@ -150,7 +155,6 @@ export default {
      *  数据
      */
     const { confirm } = global();
-    // const { getInfoCategory, category } = common();
     const dialog_visible = ref(false);
     const category_value = ref("");
     const date_value = ref("");
@@ -169,33 +173,9 @@ export default {
         label: "标题"
       }
     ]);
-    const tableData = reactive([
-      {
-        title:
-          "习近平向黎巴嫩总统奥恩致慰问电习近平向黎巴嫩总统奥恩致慰问电习近平向黎巴嫩总统奥恩致慰问电",
-        category: "国内新闻",
-        date: "2016-05-02 10:12:22",
-        user: "王小虎"
-      },
-      {
-        title: "习近平向黎巴嫩总统奥恩致慰问电",
-        category: "国内新闻",
-        date: "2016-05-02 10:12:22",
-        user: "王小虎"
-      },
-      {
-        title: "习近平向黎巴嫩总统奥恩致慰问电",
-        category: "国内新闻",
-        date: "2016-05-02 10:12:22",
-        user: "王小虎"
-      },
-      {
-        title: "习近平向黎巴嫩总统奥恩致慰问电",
-        category: "国内新闻",
-        date: "2016-05-02 10:12:22",
-        user: "王小虎"
-      }
-    ]);
+    const tableData = reactive({
+      item: []
+    });
 
     /**
      * 方法
@@ -235,20 +215,34 @@ export default {
           console.log(err);
         });
     };
+    const getList = () => {
+      let requestData = {
+        categoryId: "",
+        startTime: "",
+        endTime: "",
+        title: "",
+        id: "",
+        pageNumber: 1,
+        pageSize: 20
+      };
+      GetList(requestData)
+        .then(res => {
+          let data = res.data.data;
+          console.log(data.data);
+          tableData.item = data.data;
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    };
 
     /**
      * 生命周期
      */
     onMounted(() => {
-      // getInfoCategory();
       getCategory();
+      getList();
     });
-    // watch(
-    //   () => category.item,
-    //   value => {
-    //     options.category = value;
-    //   }
-    // );
 
     return {
       // ref
@@ -266,7 +260,8 @@ export default {
       handleCurrentChange,
       dialogClose,
       deleteItem,
-      deleteAll
+      deleteAll,
+      getList
     };
   }
 };
