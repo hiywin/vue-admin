@@ -85,7 +85,13 @@
     </el-row>
     <!-- 数据表格 -->
     <div class="black-space-20"></div>
-    <el-table :data="tableData.item" border style="width: 100%">
+    <el-table
+      :data="tableData.item"
+      border
+      style="width: 100%"
+      v-loading="loadingData"
+      @selection-change="handleSelectionChange"
+    >
       <el-table-column
         type="selection"
         width="45"
@@ -97,20 +103,22 @@
         prop="categoryName"
         label="类别"
         width="130"
+        :formatter="toCategory"
       ></el-table-column>
       <el-table-column
         prop="createDate"
         label="日期"
         width="200"
+        :formatter="toDate"
       ></el-table-column>
       <!-- <el-table-column prop="user" label="管理员" width="150">
       </el-table-column> -->
       <el-table-column label="操作" width="180" fixed="right">
-        <template>
+        <template slot-scope="scope">
           <el-button type="success" size="mini" @click="dialog_visible = true"
             >编辑</el-button
           >
-          <el-button type="danger" size="mini" @click="deleteItem"
+          <el-button type="danger" size="mini" @click="deleteItem(scope.row.id)"
             >删除</el-button
           >
         </template>
@@ -148,7 +156,8 @@
 import DialogInfo from "./dialog/info";
 import { ref, reactive, onMounted } from "@vue/composition-api";
 import { global } from "@/utils/global";
-import { GetList } from "@/api/news";
+import { GetList, DeleteInfo } from "@/api/news";
+import { formatDate } from "@/utils/common";
 export default {
   name: "infoIndex",
   components: { DialogInfo },
@@ -163,6 +172,8 @@ export default {
     const select_keywork = ref("id");
     const search_keywork = ref("");
     const total = ref(0);
+    const loadingData = ref(false);
+    const deleteInfoId = ref("");
     const options = reactive({
       category: []
     });
@@ -198,7 +209,8 @@ export default {
     const dialogClose = () => {
       dialog_visible.value = false;
     };
-    const deleteItem = () => {
+    const deleteItem = id => {
+      deleteInfoId.value = [id];
       confirm({
         content: "确认删除当前信息，确认后将无法恢复！",
         tips: "警告",
@@ -206,13 +218,32 @@ export default {
       });
     };
     const deleteAll = () => {
+      if (!deleteInfoId.value || deleteInfoId.value.length == 0) {
+        root.$message({
+          message: "请选择需要删除的数据！",
+          type: "error"
+        });
+        return false;
+      }
       confirm({
         content: "确认删除选择的信息，确认后将无法恢复！",
-        type: "success"
+        tips: "警告",
+        fn: comfirmDelete
       });
     };
     const comfirmDelete = () => {
-      console.log("删除111111");
+      DeleteInfo({ id: deleteInfoId.value })
+        .then(res => {
+          deleteInfoId.value = "";
+          root.$message({
+            message: res.data.message,
+            type: "success"
+          });
+          getList();
+        })
+        .catch(err => {
+          console.log(err);
+        });
     };
     const getCategory = () => {
       root.$store
@@ -234,16 +265,36 @@ export default {
         pageNumber: page.pageNumber,
         pageSize: page.pageSize
       };
+      if (loadingData.value) {
+        return false;
+      }
+      loadingData.value = true;
       GetList(requestData)
         .then(res => {
           let data = res.data.data;
-          console.log(data);
           tableData.item = data.data;
           total.value = data.total;
+          loadingData.value = false;
         })
         .catch(err => {
+          loadingData.value = false;
           console.log(err);
         });
+    };
+    const toDate = row => {
+      return formatDate(row.createDate);
+    };
+    const toCategory = row => {
+      let categoryId = row.categoryId;
+      let categoryData = options.category.filter(p => p.id == categoryId)[0];
+      if (!categoryData) {
+        return "";
+      }
+      return categoryData.category_name;
+    };
+    const handleSelectionChange = rows => {
+      let ids = rows.map(p => p.id); // map映射数据
+      deleteInfoId.value = ids;
     };
 
     /**
@@ -262,6 +313,7 @@ export default {
       select_keywork,
       search_keywork,
       total,
+      loadingData,
       // reactive
       options,
       keyOptions,
@@ -272,7 +324,10 @@ export default {
       dialogClose,
       deleteItem,
       deleteAll,
-      getList
+      getList,
+      toDate,
+      toCategory,
+      handleSelectionChange
     };
   }
 };
