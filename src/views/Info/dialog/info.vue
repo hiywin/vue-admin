@@ -2,28 +2,39 @@
   <div>
     <el-dialog
       title="新增"
-      :visible.sync="dialogVisible"
+      :visible.sync="data.dialogVisible"
       width="30%"
       @close="dialogClose"
       @opened="dialogOpened"
     >
-      <el-form :model="form" ref="categoryForm"
-        ><el-form-item label="类别" :label-width="formLabelWidth">
-          <el-select v-model="form.category" placeholder="请选择类别">
+      <el-form :model="data.form" ref="categoryForm"
+        ><el-form-item label="类别" :label-width="data.formLabelWidth">
+          <el-select v-model="data.form.category" placeholder="请选择类别">
             <el-option
-              v-for="item in categoryOption.item"
+              v-for="item in data.categoryOption"
               :key="item.id"
               :label="item.category_name"
               :value="item.id"
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="标题" :label-width="formLabelWidth" prop="title">
-          <el-input v-model="form.title" placeholder="请输入标题"></el-input>
-        </el-form-item>
-        <el-form-item label="概况" :label-width="formLabelWidth" prop="content">
+        <el-form-item
+          label="标题"
+          :label-width="data.formLabelWidth"
+          prop="title"
+        >
           <el-input
-            v-model="form.content"
+            v-model="data.form.title"
+            placeholder="请输入标题"
+          ></el-input>
+        </el-form-item>
+        <el-form-item
+          label="概况"
+          :label-width="data.formLabelWidth"
+          prop="content"
+        >
+          <el-input
+            v-model="data.form.content"
             type="textarea"
             rows="5"
             placeholder="请输入概况"
@@ -36,7 +47,10 @@
             <el-button @click="dialogClose">取 消</el-button>
           </el-col>
           <el-col :span="8">
-            <el-button type="danger" @click="submit" :loading="submitLoading"
+            <el-button
+              type="danger"
+              @click="submit"
+              :loading="data.submitLoading"
               >确 定</el-button
             >
           </el-col>
@@ -46,7 +60,7 @@
   </div>
 </template>
 <script>
-import { ref, reactive, watch } from "@vue/composition-api";
+import { reactive, watch } from "@vue/composition-api";
 import { AddInfo } from "@/api/news";
 export default {
   name: "dialogInfo",
@@ -61,44 +75,46 @@ export default {
     }
   },
   setup(props, { root, emit, refs }) {
-    /**
-     * ref数据
-     */
-    const dialogVisible = ref(false);
-    const formLabelWidth = ref("70px");
-    const submitLoading = ref(false);
-    /**
-     * reactive数据
-     */
-    const form = reactive({
-      category: "",
-      title: "",
-      content: ""
-    });
-    const categoryOption = reactive({
-      item: []
+    const data = reactive({
+      dialogVisible: false, //弹窗标记
+      formLabelWidth: "70px", //文本宽度
+      submitLoading: false, //按钮加载
+      //表单数据
+      form: {
+        category: "",
+        title: "",
+        content: ""
+      },
+      categoryOption: [] //分类下拉
     });
 
     /**
      * 方法
      */
     const dialogClose = () => {
-      dialogVisible.value = false;
+      data.dialogVisible = false;
       emit("close", false);
       refs.categoryForm.resetFields();
     };
     const dialogOpened = () => {
-      categoryOption.item = props.category;
+      data.categoryOption = props.category;
     };
     const submit = () => {
+      if (!data.form.category || !data.form.title) {
+        root.$message({
+          message: "分类和标题不能为空!",
+          type: "error"
+        });
+        return false;
+      }
       let requestData = {
-        categoryId: form.category,
-        title: form.title,
-        content: form.content,
+        categoryId: data.form.category,
+        title: data.form.title,
+        content: data.form.content,
         imgUrl: "https://cn.vuejs.org/images/logo.png",
         createDate: "2020-08-10 10:10:10"
       };
-      submitLoading.value = true;
+      data.submitLoading = true;
       AddInfo(requestData)
         .then(res => {
           if (res.data.resCode == 0) {
@@ -113,11 +129,11 @@ export default {
               type: "error"
             });
           }
-          submitLoading.value = false;
+          data.submitLoading = false;
         })
         .catch(err => {
           console.log(err);
-          submitLoading.value = false;
+          data.submitLoading = false;
         });
     };
 
@@ -127,18 +143,12 @@ export default {
     watch(
       () => props.flag,
       newValue => {
-        dialogVisible.value = newValue;
+        data.dialogVisible = newValue;
       }
     );
 
     return {
-      // ref
-      dialogVisible,
-      formLabelWidth,
-      submitLoading,
-      // reactive
-      form,
-      categoryOption,
+      data,
       // func
       dialogClose,
       dialogOpened,

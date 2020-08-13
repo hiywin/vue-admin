@@ -69,7 +69,9 @@
         ></el-input>
       </el-col>
       <el-col :span="2">
-        <el-button type="danger" style="width:90%">搜索</el-button>
+        <el-button type="danger" style="width:90%" @click="getList"
+          >搜索</el-button
+        >
       </el-col>
       <el-col :span="2">
         <el-button
@@ -128,7 +130,7 @@
           @current-change="handleCurrentChange"
           :page-sizes="[10, 20, 50, 100, 1000]"
           layout="total,sizes,prev,pager,next,jumper"
-          :total="1000"
+          :total="total"
         >
         </el-pagination>
       </el-col>
@@ -160,6 +162,7 @@ export default {
     const date_value = ref("");
     const select_keywork = ref("id");
     const search_keywork = ref("");
+    const total = ref(0);
     const options = reactive({
       category: []
     });
@@ -176,15 +179,21 @@ export default {
     const tableData = reactive({
       item: []
     });
+    const page = reactive({
+      pageNumber: 1,
+      pageSize: 10
+    });
 
     /**
      * 方法
      */
     const handleSizeChange = value => {
-      console.log(value);
+      page.pageSize = value;
+      getList();
     };
     const handleCurrentChange = value => {
-      console.log(value);
+      page.pageNumber = value;
+      getList();
     };
     const dialogClose = () => {
       dialog_visible.value = false;
@@ -222,14 +231,15 @@ export default {
         endTime: "",
         title: "",
         id: "",
-        pageNumber: 1,
-        pageSize: 20
+        pageNumber: page.pageNumber,
+        pageSize: page.pageSize
       };
       GetList(requestData)
         .then(res => {
           let data = res.data.data;
-          console.log(data.data);
+          console.log(data);
           tableData.item = data.data;
+          total.value = data.total;
         })
         .catch(err => {
           console.log(err);
@@ -251,6 +261,7 @@ export default {
       date_value,
       select_keywork,
       search_keywork,
+      total,
       // reactive
       options,
       keyOptions,
