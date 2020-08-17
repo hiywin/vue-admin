@@ -255,16 +255,28 @@ export default {
           console.log(err);
         });
     };
-    const getList = () => {
+    const formatData = () => {
       let requestData = {
-        categoryId: "",
-        startTime: "",
-        endTime: "",
-        title: "",
-        id: "",
         pageNumber: page.pageNumber,
         pageSize: page.pageSize
       };
+      // 判断分类
+      if (category_value.value) {
+        requestData.categoryId = category_value.value;
+      }
+      // 日期
+      if (date_value.value.length > 0) {
+        requestData.startTime = date_value.value[0];
+        requestData.endTime = date_value.value[1];
+      }
+      // 关键字
+      if (search_keywork.value) {
+        requestData[select_keywork.value] = search_keywork.value;
+      }
+      return requestData;
+    };
+    const getList = () => {
+      let requestData = formatData();
       if (loadingData.value) {
         return false;
       }
@@ -324,10 +336,10 @@ export default {
       dialogClose,
       deleteItem,
       deleteAll,
-      getList,
       toDate,
       toCategory,
-      handleSelectionChange
+      handleSelectionChange,
+      getList
     };
   }
 };
