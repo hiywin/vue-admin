@@ -149,6 +149,7 @@
       :flag="dialog_visible"
       @close="dialogClose"
       :category="options.category"
+      @getListEmit="getList"
     />
   </div>
 </template>

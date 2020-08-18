@@ -123,6 +123,13 @@ export default {
               type: "success"
             });
             refs.categoryForm.resetFields();
+            /**
+             * 两种刷新数据方式
+             * 1.查询接口
+             * 2.直接做列表添加一条数据
+             */
+            emit("getListEmit");
+            data.dialogVisible = false;
           } else {
             root.$message({
               message: res.data.message,
