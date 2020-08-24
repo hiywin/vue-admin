@@ -20,6 +20,16 @@ export function GetCategory(data) {
   });
 }
 /**
+ * 获取所有分类列表（包含子级）
+ */
+export function GetCategoryAll(data) {
+  return service.request({
+    method: "post",
+    url: "/news/getCategoryAll/",
+    data
+  });
+}
+/**
  * 删除分类
  */
 export function DeleteCategory(data) {
@@ -66,6 +76,16 @@ export function DeleteInfo(data) {
   return service.request({
     method: "post",
     url: "/news/deleteInfo/",
+    data
+  });
+}
+/**
+ * 新增子级分类
+ */
+export function AddChildrenCategory(data) {
+  return service.request({
+    method: "post",
+    url: "/news/addChildrenCategory/",
     data
   });
 }

@@ -22,7 +22,11 @@
                   @click="editCategory(firstItem)"
                   >编辑</el-button
                 >
-                <el-button type="success" size="mini" round
+                <el-button
+                  type="success"
+                  size="mini"
+                  round
+                  @click="handlerAddChidren(firstItem)"
                   >添加子模块</el-button
                 >
                 <el-button
@@ -90,7 +94,12 @@
   </div>
 </template>
 <script>
-import { AddFirstCategory, DeleteCategory, EditCategory } from "@/api/news";
+import {
+  AddFirstCategory,
+  DeleteCategory,
+  EditCategory,
+  AddChildrenCategory
+} from "@/api/news";
 import { reactive, ref, onMounted } from "@vue/composition-api";
 import { global } from "@/utils/global";
 export default {
@@ -132,6 +141,36 @@ export default {
       }
       if (submit_type.value == "category_first_edit") {
         categoryFirstEdit();
+      }
+      if (submit_type.value == "category_children_add") {
+        categoryChildrenAdd();
+      }
+    };
+    const categoryChildrenAdd = () => {
+      if (!categoryForm.secCategoryName) {
+        root.$message({
+          message: "子级分类不能为空！",
+          type: "error"
+        });
+        return false;
+      }
+      if (currentCategoryId.value > 0) {
+        let requestData = {
+          categoryName: categoryForm.secCategoryName,
+          parentId: currentCategoryId.value
+        };
+        AddChildrenCategory(requestData)
+          .then(res => {
+            root.$message({
+              message: res.data.message,
+              type: "success"
+            });
+            getCategory();
+            resetCategoryForm();
+          })
+          .catch(err => {
+            console.log(err);
+          });
       }
     };
     const categoryFirstEdit = () => {
@@ -250,13 +289,32 @@ export default {
     };
     const getCategory = () => {
       root.$store
-        .dispatch("common/getInfoCategory")
+        .dispatch("common/getInfoCategoryAll")
         .then(res => {
           category.item = res;
         })
         .catch(err => {
           console.log(err);
         });
+      // root.$store
+      //   .dispatch("common/getInfoCategory")
+      //   .then(res => {
+      //     category.item = res;
+      //   })
+      //   .catch(err => {
+      //     console.log(err);
+      //   });
+    };
+    const handlerAddChidren = firstItem => {
+      submit_type.value = "category_children_add";
+      setCategoryFirstShow(true);
+      setCategorySecShow(true);
+      setCategoryFirstDisabled(true);
+      setCategorySecDisabled(false);
+      setSubmitDisabled(false);
+
+      categoryForm.categoryName = firstItem.category_name;
+      currentCategoryId.value = firstItem.id;
     };
     /**
      * 设置状态封装
@@ -273,9 +331,9 @@ export default {
     const setCategoryFirstDisabled = flag => {
       category_first_disabled.value = flag;
     };
-    // const setCategorySecDisabled = flag => {
-    //   category_sec_disabled.value = flag;
-    // };
+    const setCategorySecDisabled = flag => {
+      category_sec_disabled.value = flag;
+    };
     const setSubmitDisabled = flag => {
       submit_disabled.value = flag;
     };
@@ -309,7 +367,8 @@ export default {
       submit,
       addFirst,
       deleteCategoryConfirm,
-      editCategory
+      editCategory,
+      handlerAddChidren
     };
   }
 };
