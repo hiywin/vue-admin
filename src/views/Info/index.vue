@@ -113,12 +113,22 @@
       ></el-table-column>
       <!-- <el-table-column prop="user" label="管理员" width="150">
       </el-table-column> -->
-      <el-table-column label="操作" width="180" fixed="right">
+      <el-table-column label="操作" width="240" fixed="right">
         <template slot-scope="scope">
           <el-button type="success" size="mini" @click="dialog_visible = true"
             >编辑</el-button
           >
-          <el-button type="danger" size="mini" @click="deleteItem(scope.row.id)"
+          <router-link
+            :to="{ name: 'InfoDetail', query: { id: scope.row.id } }"
+            class="margin-left-10"
+          >
+            <el-button type="success" size="mini">编辑详情</el-button>
+          </router-link>
+          <el-button
+            type="danger"
+            size="mini"
+            class="margin-left-10"
+            @click="deleteItem(scope.row.id)"
             >删除</el-button
           >
         </template>
