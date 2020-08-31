@@ -60,6 +60,16 @@ export function AddInfo(data) {
   });
 }
 /**
+ * 新增信息
+ */
+export function EditInfo(data) {
+  return service.request({
+    method: "post",
+    url: "/news/editInfo/",
+    data
+  });
+}
+/**
  * 获取信息列表
  */
 export function GetList(data) {
