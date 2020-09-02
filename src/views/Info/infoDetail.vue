@@ -19,7 +19,20 @@
       <el-input v-model="data.detailForm.title" prop="title"></el-input>
     </el-form-item>
     <el-form-item label="缩略图：">
-      缩略图
+      <el-upload
+        class="avatar-uploader"
+        action="https://jsonplaceholder.typicode.com/posts/"
+        :show-file-list="false"
+        :on-success="handleAvatarSuccess"
+        :before-upload="beforeAvatarUpload"
+      >
+        <img
+          v-if="data.detailForm.imgUrl"
+          :src="data.detailForm.imgUrl"
+          class="avatar"
+        />
+        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+      </el-upload>
     </el-form-item>
     <el-form-item label="发布日期：">
       <el-date-picker
@@ -61,7 +74,8 @@ export default {
         title: "",
         categoryId: "",
         createDate: "",
-        content: ""
+        content: "",
+        imgUrl: ""
       },
       categorys: [],
       editorOption: {},
@@ -125,6 +139,22 @@ export default {
           console.log(err);
         });
     };
+    // 图片上传
+    const handleAvatarSuccess = (res, file) => {
+      data.detailForm.imgUrl = URL.createObjectURL(file.raw);
+    };
+    const beforeAvatarUpload = file => {
+      const isJPG = file.type === "image/jpeg";
+      const isLt2M = file.size / 1024 / 1024 < 2;
+
+      if (!isJPG) {
+        root.$message.error("上传头像图片只能是 JPG 格式!");
+      }
+      if (!isLt2M) {
+        root.$message.error("上传头像图片大小不能超过 2MB!");
+      }
+      return isJPG && isLt2M;
+    };
 
     onMounted(() => {
       getInfoCategory();
@@ -133,7 +163,9 @@ export default {
 
     return {
       data,
-      submit
+      submit,
+      handleAvatarSuccess,
+      beforeAvatarUpload
     };
   }
 };
