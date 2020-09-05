@@ -45,7 +45,8 @@
         <div class="label-wrap key-work">
           <label for="">关键字：&nbsp;&nbsp;</label>
           <div class="wrap-content">
-            <el-select
+            <SelectVue :config="data.configOption" />
+            <!-- <el-select
               v-model="select_keywork"
               placeholder="请选择"
               style="width:100%"
@@ -57,7 +58,7 @@
                 :value="item.value"
               >
               </el-option>
-            </el-select>
+            </el-select> -->
           </div>
         </div>
       </el-col>
@@ -169,9 +170,10 @@ import { ref, reactive, onMounted } from "@vue/composition-api";
 import { global } from "@/utils/global";
 import { GetList, DeleteInfo } from "@/api/news";
 import { formatDate } from "@/utils/common";
+import SelectVue from "@c/Select/index";
 export default {
   name: "infoIndex",
-  components: { DialogInfo },
+  components: { DialogInfo, SelectVue },
   setup(props, { root }) {
     /**
      *  数据
@@ -185,19 +187,20 @@ export default {
     const total = ref(0);
     const loadingData = ref(false);
     const deleteInfoId = ref("");
+    const data = reactive({ configOption: ["id", "title"] });
     const options = reactive({
       category: []
     });
-    const keyOptions = reactive([
-      {
-        value: "id",
-        label: "ID"
-      },
-      {
-        value: "title",
-        label: "标题"
-      }
-    ]);
+    // const keyOptions = reactive([
+    //   {
+    //     value: "id",
+    //     label: "ID"
+    //   },
+    //   {
+    //     value: "title",
+    //     label: "标题"
+    //   }
+    // ]);
     const tableData = reactive({
       item: []
     });
@@ -338,8 +341,9 @@ export default {
       total,
       loadingData,
       // reactive
+      data,
       options,
-      keyOptions,
+      // keyOptions,
       tableData,
       // methods
       handleSizeChange,
