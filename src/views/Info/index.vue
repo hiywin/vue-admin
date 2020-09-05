@@ -187,7 +187,7 @@ export default {
     const total = ref(0);
     const loadingData = ref(false);
     const deleteInfoId = ref("");
-    const data = reactive({ configOption: ["id", "title"] });
+    const data = reactive({ configOption: { init: ["id", "title"] } });
     const options = reactive({
       category: []
     });
