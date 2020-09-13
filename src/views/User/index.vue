@@ -23,18 +23,31 @@
         <el-button type="danger">添加用户</el-button>
       </el-col>
     </el-row>
+    <div class="black-space-20"></div>
+    <TableVue :config="data.tableConfig"></TableVue>
   </div>
 </template>
 <script>
 import { reactive } from "@vue/composition-api";
 import SelectVue from "@c/Select/index";
+import TableVue from "@c/Table";
 export default {
   name: "userIndex",
-  components: { SelectVue },
+  components: { SelectVue, TableVue },
   setup() {
     const data = reactive({
       configOption: {
         init: ["name", "phone", "email"]
+      },
+      tableConfig: {
+        selection: true,
+        tHead: [
+          { label: "邮箱", field: "email", width: "200" },
+          { label: "真实姓名", field: "name" },
+          { label: "手机号", field: "phone" },
+          { label: "地址", field: "address" },
+          { label: "角色", field: "role" }
+        ]
       }
     });
 

@@ -27,7 +27,7 @@ $navMenuMin: 64px;
 // Label样式设置
 @mixin labelDom($align, $width, $line-height: "normal"){
     label {
-        float: left;
+        float: $align;
         width: $width+px;
         text-align: $align;
         line-height: $line-height + px;
