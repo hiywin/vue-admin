@@ -41,6 +41,7 @@ export default {
       },
       tableConfig: {
         selection: true,
+        recordCheckbox: true,
         tHead: [
           { label: "邮箱", field: "email", width: "200" },
           { label: "真实姓名", field: "name" },

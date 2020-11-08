@@ -1,5 +1,6 @@
 <template>
   <el-table :data="data.tableData" border style="width:100%">
+    <!-- 多选框 -->
     <el-table-column
       v-if="data.tableConfig.selection"
       type="selection"
@@ -25,11 +26,13 @@ export default {
       default: () => {}
     }
   },
-  setup(props, { root }) {
+  setup(props) {
     const data = reactive({
       tableConfig: {
         // 多选框
-        selection: true,
+        selection: false,
+        // 翻页记录
+        recordCheckbox: false,
         // 表头
         tHead: []
       },
@@ -54,7 +57,7 @@ export default {
     const initTableConfig = () => {
       let configData = props.config;
       for (let key in configData) {
-        if (data.tableConfig[key]) {
+        if (data.tableConfig[key] != null) {
           data.tableConfig[key] = configData[key];
         }
       }
