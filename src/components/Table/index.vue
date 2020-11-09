@@ -6,14 +6,28 @@
       type="selection"
       width="50"
     ></el-table-column>
-    <!-- 文本数据渲染 -->
-    <el-table-column
-      v-for="item in data.tableConfig.tHead"
-      :key="item.field"
-      :prop="item.field"
-      :label="item.label"
-      :width="item.width"
-    ></el-table-column>
+    <template v-for="item in data.tableConfig.tHead">
+      <!-- v-slot插槽 -->
+      <el-table-column
+        :key="item.field"
+        :prop="item.field"
+        :label="item.label"
+        :width="item.width"
+        v-if="item.columnType === 'slot'"
+      >
+        <template slot-scope="scope">
+          <slot :name="item.slotName" :data="scope.row"></slot>
+        </template>
+      </el-table-column>
+      <!-- 文本数据渲染 -->
+      <el-table-column
+        :key="item.field"
+        :prop="item.field"
+        :label="item.label"
+        :width="item.width"
+        v-else
+      ></el-table-column>
+    </template>
   </el-table>
 </template>
 <script>
@@ -75,3 +89,10 @@ export default {
 };
 </script>
 <style lang="scss" scoped></style>
+
+<!--
+v-slot 插槽
+1、匿名插槽
+2、具名插槽：指定插槽显示内容
+3、作用域插槽：可以进行数据绑定，父子组件通讯
+-->

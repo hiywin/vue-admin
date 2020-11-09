@@ -24,7 +24,23 @@
       </el-col>
     </el-row>
     <div class="black-space-20"></div>
-    <TableVue :config="data.tableConfig"></TableVue>
+    <TableVue :config="data.tableConfig">
+      <template v-slot:status="slotData">
+        <el-switch
+          v-model="slotData.data.name"
+          active-color="#13ce66"
+          inactive-color="#ff4949"
+        ></el-switch>
+      </template>
+      <template v-slot:operation="slotData">
+        <el-button size="mini" type="primary" @click="dataEdit(slotData.data)"
+          >编辑</el-button
+        >
+        <el-button size="mini" type="danger" @click="dataDelete(slotData.data)"
+          >删除</el-button
+        >
+      </template>
+    </TableVue>
   </div>
 </template>
 <script>
@@ -47,13 +63,36 @@ export default {
           { label: "真实姓名", field: "name" },
           { label: "手机号", field: "phone" },
           { label: "地址", field: "address" },
-          { label: "角色", field: "role" }
+          { label: "角色", field: "role" },
+          {
+            label: "禁启用状态",
+            field: "status",
+            columnType: "slot",
+            slotName: "status"
+          },
+          {
+            label: "操作",
+            field: "operation",
+            columnType: "slot",
+            slotName: "operation"
+          }
         ]
       }
     });
 
+    const dataEdit = row => {
+      console.log(row);
+    };
+
+    const dataDelete = row => {
+      console.log(row);
+    };
+
     return {
-      data
+      data,
+
+      dataEdit,
+      dataDelete
     };
   }
 };
